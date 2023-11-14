@@ -8,6 +8,7 @@ class MonikenApplicationTests {
 
     @Test
     void contextLoads() {
+        System.out.println("aSdads");
     }
 
 }
