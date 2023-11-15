@@ -1,0 +1,42 @@
+name: Transite Jira Task to Done
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Jira Workflow
+    steps:
+      - 
+        name: Login
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+      - 
+        name: Find Issue
+        id: find_issue
+        shell: bash
+        run: |
+          echo "::set-output name=ISSUE_ID::$(echo ${GITHUB_HEAD_REF} | egrep -o 'MON-[0-9]{1,4}')"
+          echo Имя ветки: $GITHUB_HEAD_REF
+          echo Извлеченная таска: ${GITHUB_HEAD_REF} | egrep -o 'MON-[0-9]{1,4}'
+      - 
+        name: Check Issue
+        shell: bash
+        run: |
+          if [[ "${{steps.find_issue.outputs.ISSUE_ID}}" == "" ]]; then
+            echo "Назови свою ветку в соответсвии с паттерном: [project_key]-[task_number]-branch_name"
+            exit 1
+          fi
+          echo Jira таска найдена: ${{steps.find_issue.outputs.ISSUE_ID}}
+      - 
+        name: Transition issue
+        if: ${{ success() }}
+        uses: atlassian/gajira-transition@master
+        with:
+          issue: ${{ steps.find_issue.outputs.ISSUE_ID }}
+          transition: "Done"
