@@ -9,5 +9,4 @@ import java.util.Optional;
 @Repository
 public interface RouteRepository extends JpaRepository<Route, String> {
     Optional<Route> findByEndpoint(String endpoint);
-
 }

@@ -11,15 +11,18 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Type;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Getter @Setter @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
-public class Route {
+public class Route extends RepresentationModel<Route> {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id

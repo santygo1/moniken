@@ -3,14 +3,16 @@ package ru.moniken.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import ru.moniken.exception.NotFoundRouteException;
 import ru.moniken.exception.RouteAlreadyExistException;
 import ru.moniken.model.Route;
 import ru.moniken.repository.RouteRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -18,12 +20,21 @@ import java.util.Optional;
 public class RouteManagerService {
 
     final RouteRepository repository;
+    final MessageSource messageSource;
 
-    private Route tryCommitRoute(Route route){
+    private Route tryCommitRoute(Route route) {
         try {
             return repository.save(route);
         } catch (DataIntegrityViolationException e) {
-            throw new RouteAlreadyExistException(route.getEndpoint());
+            throw new RouteAlreadyExistException(
+                    String.format(
+                            messageSource.getMessage(
+                                    "route.error.already-exist",
+                                    null,
+                                    LocaleContextHolder.getLocale()),
+                            route.getEndpoint()
+                    )
+            );
         }
     }
 
@@ -40,11 +51,25 @@ public class RouteManagerService {
         return repository.findAll();
     }
 
-    public Optional<Route> getById(String id) {
-        return repository.findById(id);
+    public Route getById(String id) {
+        return repository.findById(id).orElseThrow(() ->
+                new NotFoundRouteException(
+                        String.format(
+                                messageSource.getMessage(
+                                        "route.error.not-found",
+                                        null,
+                                        LocaleContextHolder.getLocale()),
+                                id
+                        )
+                )
+        );
     }
 
     public void deleteById(String id) {
         repository.deleteById(id);
+    }
+
+    public boolean existsById(String id) {
+        return repository.existsById(id);
     }
 }
