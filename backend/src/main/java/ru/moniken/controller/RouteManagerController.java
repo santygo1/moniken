@@ -16,13 +16,15 @@ import ru.moniken.service.RouteManagerService;
 import java.net.URI;
 import java.util.stream.Collectors;
 
-// TODO: Подключить Swagger
 // TODO: Добавить коллекции и подумать над HATEOAS
+// TODO: Подключить Swagger
 // TODO: Добавить логирование
+// TODO: Написать тесты
+
 // TODO: Добавить проверку нагрузки
 // TODO: Добавить балансировшик нагрузки
 @RestController
-@RequestMapping("${moniken.config.endpoint}") // TODO: добавить в конфиг
+@RequestMapping("${moniken.config.endpoint}")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class RouteManagerController {
@@ -35,7 +37,7 @@ public class RouteManagerController {
 
     final static String ID = "/{id}";
 
-    private void checkReserved(String endpoint){
+    private void checkReserved(String endpoint) {
         if (routeService.normalizeEndpoint(endpoint)
                 .startsWith(routeService.normalizeEndpoint(controllerMapping)))
             throw new ReservedServiceEndpointException(controllerMapping);
