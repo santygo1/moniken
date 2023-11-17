@@ -10,3 +10,7 @@ spring:
 logging:
   level:
     org.hibernate: OFF
+
+moniken:
+  config:
+    endpoint: "/moniken/config"

@@ -3,16 +3,15 @@ package ru.moniken.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import ru.moniken.exception.NotFoundRouteException;
-import ru.moniken.exception.RouteAlreadyExistException;
-import ru.moniken.model.Route;
+import ru.moniken.exception.RouteAlreadyExistsException;
+import ru.moniken.exception.RouteNotFoundException;
+import ru.moniken.model.entity.RouteEntity;
 import ru.moniken.repository.RouteRepository;
 
 import java.util.List;
+
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -20,49 +19,47 @@ import java.util.List;
 public class RouteManagerService {
 
     final RouteRepository repository;
-    final MessageSource messageSource;
 
-    private Route tryCommitRoute(Route route) {
+    /**
+     * Нормализирует endpoint,
+     * то есть заменяет последовательности символов "/" на символ,
+     * добавляет символ "/" вначале
+     *
+     * @return нормализированный endpoint
+     */
+    public String normalizeEndpoint(String endpoint) {
+        if (!endpoint.startsWith("/")) endpoint = "/" + endpoint;
+        endpoint = endpoint.replaceAll("/+", "/");
+        if (endpoint.endsWith("/")) endpoint = endpoint.substring(0, endpoint.length()-1);
+        return endpoint;
+    }
+
+    private RouteEntity tryCommitRoute(RouteEntity route) {
         try {
+            route.setEndpoint(normalizeEndpoint(route.getEndpoint()));
             return repository.save(route);
         } catch (DataIntegrityViolationException e) {
-            throw new RouteAlreadyExistException(
-                    String.format(
-                            messageSource.getMessage(
-                                    "route.error.already-exist",
-                                    null,
-                                    LocaleContextHolder.getLocale()),
-                            route.getEndpoint()
-                    )
-            );
+            throw new RouteAlreadyExistsException(route.getMethod().name(), route.getEndpoint());
         }
     }
 
-    public Route create(Route route) {
+
+    public RouteEntity create(RouteEntity route) {
         return tryCommitRoute(route);
     }
 
-    public Route update(String id, Route route) {
+    public RouteEntity update(String id, RouteEntity route) {
         route.setId(id);
         return tryCommitRoute(route);
     }
 
-    public List<Route> getAll() {
+    public List<RouteEntity> getAll() {
         return repository.findAll();
     }
 
-    public Route getById(String id) {
-        return repository.findById(id).orElseThrow(() ->
-                new NotFoundRouteException(
-                        String.format(
-                                messageSource.getMessage(
-                                        "route.error.not-found",
-                                        null,
-                                        LocaleContextHolder.getLocale()),
-                                id
-                        )
-                )
-        );
+    public RouteEntity getById(String id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RouteNotFoundException(id));
     }
 
     public void deleteById(String id) {
