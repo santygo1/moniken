@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import ru.moniken.model.entity.RouteEntity;
+import ru.moniken.model.entity.Route;
 import ru.moniken.service.RouteProducerService;
 
 import java.util.List;
@@ -28,14 +28,14 @@ public class RouteProducerController {
         String endpoint = request.getRequestURI();
 
         // Ищем роуты по конечной точке
-        List<RouteEntity> routes = routeService.getByEndpoint(endpoint);
+        List<Route> routes = routeService.getByEndpoint(endpoint);
 
         // Если конечная точка не существует значит not found
         if (routes.size() == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         System.out.println(routes);
 
-        RouteEntity route = routes.stream()
+        Route route = routes.stream()
                 // Если конечная точка существует, то ищем среди них метод
                 .filter((r) -> request.getMethod().equals(r.getMethod().name()))
                 .findAny()

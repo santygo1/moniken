@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import ru.moniken.model.entity.RouteEntity;
+import ru.moniken.model.entity.Route;
 import ru.moniken.repository.RouteRepository;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class RouteProducerService {
 
     final RouteRepository repository;
 
-    public List<RouteEntity> getByEndpoint(String endpoint) {
+    public List<Route> getByEndpoint(String endpoint) {
         return repository.findByEndpoint(endpoint);
     }
 

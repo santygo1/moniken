@@ -9,23 +9,28 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Type;
 import org.springframework.http.HttpStatus;
-import ru.moniken.model.records.HTTPMethod;
+import ru.moniken.model.records.HttpMethod;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"method", "endpoint"})})
+@Table(name = "route", uniqueConstraints = {@UniqueConstraint(columnNames = {"method", "endpoint"})})
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
-public class RouteEntity {
+public class Route {
 
     @Id
+    @Column(name = "route_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
+
+    // Если имя не указано, то заменяется на endpoint
+    // (см. RouteManagerService.commitRouteOrExcept)
+    String name;
 
     @Column(nullable = false)
     String endpoint;
@@ -36,7 +41,7 @@ public class RouteEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    HTTPMethod method = HTTPMethod.GET;
+    HttpMethod method = HttpMethod.GET;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -48,4 +53,10 @@ public class RouteEntity {
 
     @Column(nullable = false)
     int timeout = 0;
+
+    String description;
+
+    @ManyToOne
+    @JoinColumn(name = "collection_id", nullable = false)
+    RouteCollection collection;
 }

@@ -4,22 +4,22 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import ru.moniken.exception.RouteMethodNotExistsException;
-import ru.moniken.model.records.HTTPMethod;
+import ru.moniken.model.records.HttpMethod;
 
 import java.io.IOException;
 
-public class HttpMethodDeserializer extends JsonDeserializer<HTTPMethod> {
+public class HttpMethodDeserializer extends JsonDeserializer<HttpMethod> {
     @Override
-    public HTTPMethod deserialize(
+    public HttpMethod deserialize(
             JsonParser jsonParser,
             DeserializationContext deserializationContext)
             throws IOException {
         String result = jsonParser.getText();
         String upperResult = result.toUpperCase();
-        HTTPMethod method;
+        HttpMethod method;
 
         try {
-            method = HTTPMethod.valueOf(upperResult);
+            method = HttpMethod.valueOf(upperResult);
         } catch (IllegalArgumentException e) {
             throw new RouteMethodNotExistsException(result);
         }

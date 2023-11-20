@@ -1,6 +1,6 @@
 package ru.moniken.model.records;
 
-public enum HTTPMethod {
+public enum HttpMethod {
     GET,
     POST,
     PUT,

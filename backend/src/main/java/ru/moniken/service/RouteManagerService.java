@@ -1,13 +1,16 @@
 package ru.moniken.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import ru.moniken.config.MonikenConfig;
+import ru.moniken.exception.ReservedServiceEndpointException;
 import ru.moniken.exception.RouteAlreadyExistsException;
 import ru.moniken.exception.RouteNotFoundException;
-import ru.moniken.model.entity.RouteEntity;
+import ru.moniken.model.entity.Route;
 import ru.moniken.repository.RouteRepository;
 
 import java.util.List;
@@ -20,53 +23,56 @@ public class RouteManagerService {
 
     final RouteRepository repository;
 
-    /**
-     * Нормализирует endpoint,
-     * то есть заменяет последовательности символов "/" на символ,
-     * добавляет символ "/" вначале
-     *
-     * @return нормализированный endpoint
-     */
-    public String normalizeEndpoint(String endpoint) {
-        if (!endpoint.startsWith("/")) endpoint = "/" + endpoint;
-        endpoint = endpoint.replaceAll("/+", "/");
-        if (endpoint.endsWith("/")) endpoint = endpoint.substring(0, endpoint.length()-1);
-        return endpoint;
+    final MonikenConfig monikenEndpoint;
+
+    private void checkReservedEndpoint(String endpoint) {
+        String reservedEndpoint = monikenEndpoint.getEndpoint();
+        if (endpoint.startsWith(reservedEndpoint))
+            throw new ReservedServiceEndpointException(reservedEndpoint);
     }
 
-    private RouteEntity tryCommitRoute(RouteEntity route) {
+    private Route commitRouteOrExcept(Route route) {
+        checkReservedEndpoint(route.getEndpoint()); // Проверка на допустимость endpoint'а
+
+        if (route.getName() == null) {
+            route.setName(route.getEndpoint());
+        }
+
         try {
-            route.setEndpoint(normalizeEndpoint(route.getEndpoint()));
             return repository.save(route);
         } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
             throw new RouteAlreadyExistsException(route.getMethod().name(), route.getEndpoint());
         }
     }
 
 
-    public RouteEntity create(RouteEntity route) {
-        return tryCommitRoute(route);
+    @Transactional
+    public Route create(Route route) {
+        return commitRouteOrExcept(route);
     }
 
-    public RouteEntity update(String id, RouteEntity route) {
-        route.setId(id);
-        return tryCommitRoute(route);
+    @Transactional
+    public Route update(String id, Route update) {
+        update.setId(id);
+
+        Route route = getById(id);
+        update.setCollection(route.getCollection());
+
+        return commitRouteOrExcept(update);
     }
 
-    public List<RouteEntity> getAll() {
+    public List<Route> getAll() {
         return repository.findAll();
     }
 
-    public RouteEntity getById(String id) {
+    public Route getById(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RouteNotFoundException(id));
     }
 
+    @Transactional
     public void deleteById(String id) {
         repository.deleteById(id);
-    }
-
-    public boolean existsById(String id) {
-        return repository.existsById(id);
     }
 }
