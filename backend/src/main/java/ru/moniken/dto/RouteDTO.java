@@ -9,9 +9,11 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import ru.moniken.dto.deserializer.HttpHeadersDeserializer;
 import ru.moniken.dto.deserializer.HttpMethodDeserializer;
@@ -23,16 +25,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Data
+@Getter
+@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RouteDTO {
-
-    public static class SpecialView {
-        public interface Short extends Views.Short{
-        }
-
-        public interface Details extends Views.Short{};
-    }
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class RouteDTO extends RepresentationModel<RouteDTO> {
 
 
     @JsonView(Views.Short.class)
@@ -75,10 +72,6 @@ public class RouteDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Length(max = 500, message = "{route.error.description.max-length}")
     String description;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @JsonView({SpecialView.Short.class, SpecialView.Details.class})
-    String collection;
 }
 
 

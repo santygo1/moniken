@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.moniken.dto.RouteCollectionDTO;
@@ -18,9 +19,12 @@ import ru.moniken.model.entity.RouteCollection;
 import ru.moniken.service.RouteCollectionService;
 
 import java.net.URI;
+import java.util.List;
 import java.util.stream.Collectors;
 
-// TODO: Добавить HATEOAS
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -35,7 +39,11 @@ public class RouteCollectionController {
     ResponseEntity<Iterable<RouteCollectionDTO>> getAllCollections() {
         Iterable<RouteCollectionDTO> collectionDTOS =
                 collectionService.getAll().stream()
-                        .map(collection -> mapper.map(collection, RouteCollectionDTO.class))
+                        // Преобразует коллекцию в дто и добавляет HATEOAS ссылку на себя
+                        .map(collection ->
+                                mapper.map(collection, RouteCollectionDTO.class)
+                                        .add(selfLink(collection.getName()))
+                        )
                         .collect(Collectors.toList());
 
         return ResponseEntity.ok(collectionDTOS);
@@ -43,8 +51,13 @@ public class RouteCollectionController {
 
     @JsonView(Views.Details.class)
     @GetMapping("/{collectionName}")
-    ResponseEntity<RouteCollectionDTO> getCollectionById(@PathVariable String collectionName) {
-        return ResponseEntity.ok(mapper.map(collectionService.getByName(collectionName), RouteCollectionDTO.class));
+    ResponseEntity<RouteCollectionDTO> getCollectionByName(@PathVariable String collectionName) {
+        RouteCollection collection = collectionService.getByName(collectionName);
+
+        RouteCollectionDTO dto = mapper.map(collection, RouteCollectionDTO.class)
+                .add(defaultLinks(collection.getName()));
+
+        return ResponseEntity.ok(dto);
     }
 
     /*  Создает путь для нового ресурса,
@@ -62,10 +75,12 @@ public class RouteCollectionController {
         RouteCollection created = collectionService.create(mapper.map(collection, RouteCollection.class));
 
         String location = getCreatedLocation(request, created.getName());
+        RouteCollectionDTO dto = mapper.map(created, RouteCollectionDTO.class)
+                .add(defaultLinks(created.getName()));
 
         return ResponseEntity
                 .created(URI.create(location))
-                .body(mapper.map(created, RouteCollectionDTO.class));
+                .body(dto);
     }
 
     @JsonView(Views.Details.class)
@@ -75,11 +90,15 @@ public class RouteCollectionController {
             @RequestBody @Valid RouteDTO routeDTO,
             HttpServletRequest request) {
         Route route = collectionService.addRoute(collectionName, mapper.map(routeDTO, Route.class));
+
+        // Формируем данные для ответа
         String location = getCreatedLocation(request, route.getId());
+        RouteDTO dto = mapper.map(route, RouteDTO.class)
+                .add(RouteManagerController.defaultLinks(route.getId(), route.getCollection().getName()));
 
         return ResponseEntity
                 .created(URI.create(location))
-                .body(mapper.map(route, RouteDTO.class));
+                .body(dto);
     }
 
     @JsonView(Views.Short.class)
@@ -87,15 +106,43 @@ public class RouteCollectionController {
     ResponseEntity<Iterable<RouteDTO>> getCollectionRoutes(@PathVariable String collectionName) {
         // Получаем роуты из коллекции и преобразуем в DTO
         Iterable<RouteDTO> routes = collectionService.getByName(collectionName).getRoutes().stream()
-                .map(r -> mapper.map(r, RouteDTO.class))
+                .map(r -> mapper.map(r, RouteDTO.class)
+                        .add(RouteManagerController.selfLink(r.getId())))
                 .collect(Collectors.toSet());
 
         return ResponseEntity.ok(routes);
+    }
+
+    @JsonView(Views.Details.class)
+    @PutMapping("/{collectionName}")
+    ResponseEntity<RouteCollectionDTO> updateCollection(@PathVariable String collectionName,
+                                                        @RequestBody @Valid RouteCollectionDTO update) {
+        RouteCollection updated = collectionService.update(collectionName, mapper.map(update, RouteCollection.class));
+
+        RouteCollectionDTO dto = mapper.map(updated, RouteCollectionDTO.class)
+                .add(defaultLinks(updated.getName()));
+
+        return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/{collectionName}")
     ResponseEntity<Void> deleteRouteCollection(@PathVariable String collectionName) {
         collectionService.delete(collectionName);
         return ResponseEntity.noContent().build();
+    }
+
+    // Возвращает HATEOAS ссылку на коллекцию
+    public static Link selfLink(String collectionName) {
+        return linkTo(methodOn(RouteCollectionController.class).getCollectionByName(collectionName))
+                .withRel("self");
+    }
+
+    // Возвращает HATEOAS ссылки на коллекцию и роуты коллекций
+    public static List<Link> defaultLinks(String collectionName) {
+        return List.of(
+                selfLink(collectionName),
+                linkTo(methodOn(RouteCollectionController.class).getCollectionRoutes(collectionName))
+                        .withRel("routes")
+        );
     }
 }

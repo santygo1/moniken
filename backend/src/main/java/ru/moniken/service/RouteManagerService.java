@@ -1,12 +1,12 @@
 package ru.moniken.service;
 
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.moniken.config.MonikenConfig;
+import ru.moniken.exception.GlobalUndefinedException;
 import ru.moniken.exception.ReservedServiceEndpointException;
 import ru.moniken.exception.RouteAlreadyExistsException;
 import ru.moniken.exception.RouteNotFoundException;
@@ -41,18 +41,18 @@ public class RouteManagerService {
         try {
             return repository.save(route);
         } catch (DataIntegrityViolationException e) {
-            e.printStackTrace();
-            throw new RouteAlreadyExistsException(route.getMethod().name(), route.getEndpoint());
+            if (e.getLocalizedMessage().contains("Unique index or primary key violation")) {
+                throw new RouteAlreadyExistsException(route.getMethod().name(), route.getEndpoint());
+            } else {
+                throw new GlobalUndefinedException();
+            }
         }
     }
 
-
-    @Transactional
     public Route create(Route route) {
         return commitRouteOrExcept(route);
     }
 
-    @Transactional
     public Route update(String id, Route update) {
         update.setId(id);
 
@@ -71,7 +71,6 @@ public class RouteManagerService {
                 .orElseThrow(() -> new RouteNotFoundException(id));
     }
 
-    @Transactional
     public void deleteById(String id) {
         repository.deleteById(id);
     }

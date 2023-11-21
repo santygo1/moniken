@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.moniken.dto.RouteDTO;
@@ -13,10 +14,13 @@ import ru.moniken.dto.Views;
 import ru.moniken.model.entity.Route;
 import ru.moniken.service.RouteManagerService;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 // TODO: Подключить Swagger
-// TODO: Добавить логирование
 // TODO: Написать тесты
 // TODO: Протестировать в докере
 // TODO: Export базы в файл
@@ -30,22 +34,24 @@ public class RouteManagerController {
     final ModelMapper mapper;
     final static String ID = "/{id}";
 
-    @JsonView(RouteDTO.SpecialView.Short.class)
+    @JsonView(Views.Short.class)
     @GetMapping
     ResponseEntity<Iterable<RouteDTO>> getAllRoutes() {
         Iterable<RouteDTO> routes = routeService.getAll().stream()
-                .map((r) -> mapper.map(r, RouteDTO.class))
+                .map((r) -> mapper.map(r, RouteDTO.class)
+                        .add(defaultLinks(r.getId(), r.getCollection().getName())))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(routes);
     }
 
-    @JsonView(RouteDTO.SpecialView.Details.class)
+    @JsonView(Views.Details.class)
     @GetMapping(ID)
     ResponseEntity<RouteDTO> getRouteById(@PathVariable String id) {
         Route route = routeService.getById(id);
+        RouteDTO dto = mapper.map(route, RouteDTO.class)
+                .add(defaultLinks(route.getId(), route.getCollection().getName()));
 
-        return ResponseEntity
-                .ok(mapper.map(route, RouteDTO.class));
+        return ResponseEntity.ok(dto);
     }
 
     @JsonView(Views.Details.class)
@@ -55,13 +61,31 @@ public class RouteManagerController {
             @Valid @RequestBody RouteDTO update) {
         Route route = routeService.update(id, mapper.map(update, Route.class));
 
+        RouteDTO dto = mapper.map(route, RouteDTO.class)
+                .add(defaultLinks(route.getId(), route.getCollection().getName()));
+
         return ResponseEntity
-                .ok(mapper.map(route, RouteDTO.class));
+                .ok(dto);
     }
 
     @DeleteMapping(ID)
     ResponseEntity<Void> deleteRoute(@PathVariable String id) {
         routeService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    public static Link selfLink(String routeId){
+        return linkTo(methodOn(RouteManagerController.class).getRouteById(routeId))
+                .withRel("self");
+    }
+
+    // Ссылки HATEOAS для роута, которые ссылаются на себя и на коллекцию, к которой относится роут
+    public static List<Link> defaultLinks(String routeId, String collectionName) {
+        return List.of(
+                selfLink(routeId),
+                linkTo(methodOn(RouteCollectionController.class).getCollectionByName(collectionName))
+                        .withRel("collection")
+                        .withName(collectionName)
+        );
     }
 }
