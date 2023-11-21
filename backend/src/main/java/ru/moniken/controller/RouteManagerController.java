@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-// TODO: Подключить Swagger
 // TODO: Написать тесты
 // TODO: Протестировать в докере
 // TODO: Export базы в файл

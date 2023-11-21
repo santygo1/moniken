@@ -13,18 +13,23 @@ import ru.moniken.validation.Endpoint;
 @Validated
 @Configuration
 @ConfigurationProperties(prefix = "moniken")
-@Getter
-@Setter
 public class MonikenConfig {
 
+    @Getter
+    @Setter
     @Length(min = 2, message = "Endpoint can't be empty")
     @NotNull(message = "Provide moniken endpoint")
     @Endpoint
     private String endpoint;
 
+    @Getter
+    @Setter
     private String version;
 
+    @Getter
     private boolean welcomeConsole = true;
+
+    private String dbFilePath;
 
     public void setWelcomeConsole(String welcomeConsole) {
         this.welcomeConsole = Boolean.parseBoolean(welcomeConsole);

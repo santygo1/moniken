@@ -4,7 +4,14 @@ server:
 spring:
   datasource:
     url: jdbc:h2:mem:moniken # Изменить на файл
+  main:
+    log-startup-info: false
+    banner-mode: off
+
+moniken:
+  db-file-path: C:/data/monikendb #TODO: for unix
+
 
 logging:
   level:
-    org.hibernate: OFF
+    root: off
