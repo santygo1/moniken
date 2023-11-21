@@ -13,7 +13,9 @@ public class EndpointValidator implements ConstraintValidator<Endpoint, String> 
         try {
             URI u = new URI(s);
             if (u.isAbsolute()) return false;
-            if (!u.getPath().equals(s)) return false;
+
+            String resultPath = u.getPath();
+            if (!resultPath.startsWith("/") || !resultPath.equals(s)) return false;
         } catch (URISyntaxException e) {
             return false;
         }

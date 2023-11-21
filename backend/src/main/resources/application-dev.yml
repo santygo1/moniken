@@ -2,6 +2,9 @@ server:
   port: 8080
 
 spring:
+  main:
+    log-startup-info: false
+    banner-mode: off
   datasource:
     url: jdbc:h2:mem:moniken
   jpa:
@@ -10,5 +13,10 @@ spring:
     console:
       enabled: true
 
-moniken:
-  endpoint: "/moniken/config"
+logging:
+  level:
+    root: off
+
+springdoc:
+  swagger-ui:
+    operations-sorter: method

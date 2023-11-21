@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,16 +18,22 @@ import ru.moniken.service.RouteProducerService;
 import java.util.List;
 
 @RestController
-@RequestMapping
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class RouteProducerController {
 
     final RouteProducerService routeService;
 
-    @RequestMapping("**")
+    /**
+     * Обрабатывает все запросы, которые не начинаются с endpoint указанного для moniken
+     * P.S: Скорее всего это костыль, но другого решения я придумать не смог
+     */
+    static final String ALL_WITH_EXCLUDE_MONIKEN = "{name:^(?!\\" + "${moniken.endpoint}" +").+}";
+
+    @RequestMapping(ALL_WITH_EXCLUDE_MONIKEN)
     ResponseEntity<Object> getRouteResponse(HttpServletRequest request) {
         String endpoint = request.getRequestURI();
+        System.out.println(endpoint);
 
         // Ищем роуты по конечной точке
         List<Route> routes = routeService.getByEndpoint(endpoint);

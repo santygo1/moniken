@@ -8,6 +8,3 @@ spring:
 logging:
   level:
     org.hibernate: OFF
-
-moniken:
-  endpoint: "/moniken/config"

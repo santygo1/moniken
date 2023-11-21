@@ -11,6 +11,4 @@ public class MonikenApplication {
     public static void main(String[] args) {
         SpringApplication.run(MonikenApplication.class, args);
     }
-
-
 }

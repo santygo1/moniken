@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = EndpointValidator.class)
 public @interface Endpoint {
-    String message() default "Endpoint syntax error";
+    String message() default "Endpoint syntax error. Please provide correct endpoint, e.g. /example or /example/...";
 
     Class<?>[] groups() default {};
 
