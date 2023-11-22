@@ -155,6 +155,7 @@ public class RouteCollectionController {
             )
     })
     @Parameter(in = ParameterIn.QUERY,
+            required = true,
             name = "collection",
             description = "New collection for add. Non described field will be null",
             schema = @Schema(implementation = RouteCollectionSchema.WriteCollection.class))
@@ -208,6 +209,7 @@ public class RouteCollectionController {
     })
     @Parameter(in = ParameterIn.QUERY,
             name = "route",
+            required = true,
             description = "New route for add into collection. Non described field will be null",
             schema = @Schema(implementation = RouteSchema.WriteRoute.class))
     @JsonView(Views.Details.class)
@@ -306,6 +308,7 @@ public class RouteCollectionController {
     })
     @Parameter(in = ParameterIn.QUERY,
             name = "update",
+            required = true,
             description = "Full update for collection. Non described field will be null",
             schema = @Schema(implementation = RouteCollectionSchema.WriteCollection.class))
     @JsonView(Views.Details.class)

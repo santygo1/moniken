@@ -148,6 +148,7 @@ public class RouteManagerController {
     })
     @Parameter(in = ParameterIn.QUERY,
             name = "update",
+            required = true,
             description = "Full update for route. Non described field will be null",
             schema = @Schema(implementation = RouteSchema.WriteRoute.class))
     @JsonView(Views.Details.class)
