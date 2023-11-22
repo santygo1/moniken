@@ -1,6 +1,7 @@
 package ru.moniken.dto;
 
 import com.fasterxml.jackson.annotation.*;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.hateoas.RepresentationModel;
 
+@Hidden
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter

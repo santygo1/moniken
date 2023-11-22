@@ -2,6 +2,9 @@ package ru.moniken.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,13 +19,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.moniken.dto.RouteDTO;
 import ru.moniken.dto.Views;
+import ru.moniken.dto.docs.schemas.ErrorSchema;
+import ru.moniken.dto.docs.schemas.RouteSchema;
 import ru.moniken.factories.links.RouteLinksFactory;
 import ru.moniken.model.entity.Route;
 import ru.moniken.service.RouteManagerService;
 
 import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 // TODO: Написать тесты
 // TODO: Протестировать в докере
@@ -39,10 +42,13 @@ public class RouteManagerController {
 
     final static String ID = "/{id}";
 
-    @Operation(summary = "Get all routes")
+    @Operation(summary = "Get all routes", ignoreJsonView = true)
     @ApiResponse(responseCode = "200",
             description = "Returning all created routes",
-            content = {@Content(mediaType = "application/hal+json")},
+            content = {@Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = RouteSchema.ShortRoute.class))
+            )},
             links = {
                     @io.swagger.v3.oas.annotations.links.Link(
                             name = "{collectionName}",
@@ -64,11 +70,13 @@ public class RouteManagerController {
         return ResponseEntity.ok(routes);
     }
 
-    @Operation(summary = "Get route by id")
+    @Operation(summary = "Get route by id", ignoreJsonView = true)
     @ApiResponses({
             @ApiResponse(responseCode = "200",
                     description = "Route with id was found",
-                    content = {@Content(mediaType = "application/hal+json", schema = @Schema(implementation = RouteDTO.class))},
+                    content = {@Content(
+                            mediaType = "application/hal+json",
+                            schema = @Schema(implementation = RouteSchema.DetailsRoute.class))},
                     links = {
                             @io.swagger.v3.oas.annotations.links.Link(
                                     name = "{collectionName}",
@@ -81,15 +89,19 @@ public class RouteManagerController {
                             )
                     }
             ),
-
             @ApiResponse(responseCode = "404",
                     description = "Route with id isn't founded",
-                    content = {@Content(mediaType = "application/hal+json")}
+                    content = {@Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorSchema.class)
+                    )}
             )
     })
     @JsonView(Views.Details.class)
     @GetMapping(ID)
-    public ResponseEntity<RouteDTO> getRouteById(@PathVariable String id) {
+    public ResponseEntity<RouteDTO> getRouteById(
+            @Parameter(description = "Route id for get")
+            @PathVariable String id) {
         Route route = routeService.getById(id);
         RouteDTO dto = mapper.map(route, RouteDTO.class)
                 .add(linksFactory.defaultLinks(route.getId(), route.getCollection().getName()));
@@ -98,11 +110,15 @@ public class RouteManagerController {
     }
 
     @Operation(summary = "Full update route by id",
-            description = "*If some of field is filled in, it's replaced with null")
+            description = "*If some of field is filled in, it's replaced with null",
+            ignoreJsonView = true)
     @ApiResponses({
             @ApiResponse(responseCode = "200",
                     description = "Route successfully updated",
-                    content = {@Content(mediaType = "application/hal+json")},
+                    content = {@Content(
+                            mediaType = "application/hal+json",
+                            schema = @Schema(implementation = RouteSchema.DetailsRoute.class)
+                    )},
                     links = {
                             @io.swagger.v3.oas.annotations.links.Link(
                                     name = "{collectionName}",
@@ -117,16 +133,27 @@ public class RouteManagerController {
             ),
             @ApiResponse(responseCode = "409",
                     description = "Route with specified method and endpoint already exists",
-                    content = {@Content(mediaType = "application/hal+json")}
+                    content = {@Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorSchema.class)
+                    )}
             ),
             @ApiResponse(responseCode = "404",
                     description = "Route with id isn't founded",
-                    content = {@Content(mediaType = "application/hal+json")}
+                    content = {@Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorSchema.class)
+                    )}
             )
     })
+    @Parameter(in = ParameterIn.QUERY,
+            name = "update",
+            description = "Full update for route. Non described field will be null",
+            schema = @Schema(implementation = RouteSchema.WriteRoute.class))
     @JsonView(Views.Details.class)
     @PutMapping(ID)
     public ResponseEntity<RouteDTO> updateRoute(
+            @Parameter(description = "Updated route id")
             @PathVariable String id,
             @Valid @RequestBody RouteDTO update) {
         Route route = routeService.update(id, mapper.map(update, Route.class));
@@ -139,11 +166,11 @@ public class RouteManagerController {
     }
 
     @Operation(summary = "Delete route by id")
-    @ApiResponse(responseCode = "204",
-            description = "Route successfully deleted"
-    )
+    @ApiResponse(responseCode = "204", description = "Route successfully deleted")
     @DeleteMapping(ID)
-    public ResponseEntity<Void> deleteRoute(@PathVariable String id) {
+    public ResponseEntity<Void> deleteRoute(
+            @Parameter(description = "Deleted route id")
+            @PathVariable String id) {
         routeService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
