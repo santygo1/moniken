@@ -1,6 +1,12 @@
 spring:
+  main:
+    log-startup-info: false
+    banner-mode: off
   profiles:
     active: prod
+
+  hateoas:
+    use-hal-as-default-json-media-type: false
 
   # it's need for integrate HATEOAS with Jackson JsonView annotation
   jackson:

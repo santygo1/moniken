@@ -11,10 +11,10 @@ spring:
     console:
       enabled: true
 
-logging:
-  level:
-    root: off
 
 springdoc:
   swagger-ui:
     operations-sorter: method
+
+moniken:
+  welcome-console: false

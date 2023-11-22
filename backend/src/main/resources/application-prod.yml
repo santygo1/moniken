@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:h2:mem:moniken # Изменить на файл
+    url: jdbc:h2:mem:moniken
   main:
     log-startup-info: false
     banner-mode: off

@@ -29,8 +29,6 @@ public class MonikenConfig {
     @Getter
     private boolean welcomeConsole = true;
 
-    private String dbFilePath;
-
     public void setWelcomeConsole(String welcomeConsole) {
         this.welcomeConsole = Boolean.parseBoolean(welcomeConsole);
     }
