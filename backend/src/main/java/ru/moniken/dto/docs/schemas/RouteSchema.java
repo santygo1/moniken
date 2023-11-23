@@ -2,7 +2,6 @@ package ru.moniken.dto.docs.schemas;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Id;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import ru.moniken.dto.RouteDTO;
@@ -19,10 +18,10 @@ public abstract class RouteSchema {
     @Schema(title = "Details Route Scheme", description = "Fullish route response")
     public static abstract class DetailsRoute extends RouteDTO {
 
-        @Schema(nullable = true, accessMode = Schema.AccessMode.READ_ONLY, description = "Route id")
+        @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Route id")
         String id;
 
-        @Schema(nullable = true, description = "Route name" +
+        @Schema(description = "Route name" +
                 "<br><i>by default: </i><Endpoint's value>", maxLength = 30)
         String name;
 
@@ -49,7 +48,7 @@ public abstract class RouteSchema {
         @Schema(nullable = true)
         Map<String, Object> body;
 
-        @Schema(nullable = true, defaultValue = "GET", description = "Route response method" +
+        @Schema(defaultValue = "GET", description = "Route response method" +
                 "<br>Rules:" +
                 "<ul>" +
                 "<li>Couple of method-endpoint must be unique</li>" +
@@ -57,7 +56,7 @@ public abstract class RouteSchema {
                 "<i>by default: </i>GET")
         HttpMethod method;
 
-        @Schema(nullable = true, defaultValue = "OK",
+        @Schema( defaultValue = "OK",
                 description = "Route response status: number or constant name for status" +
                 "<br>Examples:" +
                 "<ul>" +

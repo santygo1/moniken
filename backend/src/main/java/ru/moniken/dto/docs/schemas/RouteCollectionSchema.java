@@ -15,7 +15,7 @@ public abstract class RouteCollectionSchema {
     @Schema(title = "Details Route Collection Scheme", description = "Fullish route collection response")
     public static abstract class DetailsCollection extends RouteCollectionDTO{
 
-        @Schema(nullable = true, accessMode = Schema.AccessMode.READ_ONLY, description = "Collection id")
+        @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Collection id")
         String id;
 
 
