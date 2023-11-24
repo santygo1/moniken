@@ -25,3 +25,7 @@ moniken:
   endpoint: /moniken
   version: @project.version@
   welcome-console: true
+  port: 8080
+
+server:
+  port: ${moniken.port}
