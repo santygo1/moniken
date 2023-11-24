@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:moniken
+  main:
+    log-startup-info: false
+    banner-mode: off
+
+moniken:
+  db-file-path: C:/data/monikendb #TODO: for unix
+
+
+logging:
+  level:
+    root: off
