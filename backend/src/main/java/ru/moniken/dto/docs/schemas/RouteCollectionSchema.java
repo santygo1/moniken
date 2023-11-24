@@ -20,7 +20,7 @@ public abstract class RouteCollectionSchema {
 
 
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1,
-                description = "Collection name", maxLength = 30)
+                description = "Collection name must be without spaces", maxLength = 30)
         String name;
 
         @Schema(nullable = true, description = "Description for collection", maxLength = 500)

@@ -2,10 +2,7 @@ package ru.moniken.model.entity;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Type;
 import org.springframework.http.HttpStatus;
@@ -19,6 +16,7 @@ import java.util.Map;
 @Table(name = "route", uniqueConstraints = {@UniqueConstraint(columnNames = {"method", "endpoint"})})
 @Getter
 @Setter
+@EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
 public class Route {

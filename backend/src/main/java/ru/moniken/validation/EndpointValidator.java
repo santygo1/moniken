@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 public class EndpointValidator implements ConstraintValidator<Endpoint, String> {
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if (s == null) return false;
+        if (s == null) return true;
         try {
             URI u = new URI(s);
             if (u.isAbsolute()) return false;
