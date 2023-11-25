@@ -30,6 +30,7 @@ moniken:
   version: @project.version@
   welcome-console: true
   port: 8080
+  h2: false
 
 server:
   port: ${moniken.port}
