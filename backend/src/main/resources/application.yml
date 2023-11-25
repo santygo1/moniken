@@ -12,6 +12,9 @@ spring:
   jackson:
     mapper:
       default-view-inclusion: true
+  h2:
+    console:
+      path: ${moniken.endpoint}/h2-console
 
 springdoc:
   api-docs:
