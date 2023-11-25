@@ -42,8 +42,6 @@ public class RouteProducerController {
         // Если конечная точка не существует значит not found
         if (routes.size() == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        System.out.println(routes);
-
         Route route = routes.stream()
                 // Если конечная точка существует, то ищем среди них метод
                 .filter((r) -> request.getMethod().equals(r.getMethod().name()))
