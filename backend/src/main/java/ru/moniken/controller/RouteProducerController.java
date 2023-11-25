@@ -35,7 +35,6 @@ public class RouteProducerController {
     @RequestMapping(ALL_WITH_EXCLUDE_MONIKEN)
     ResponseEntity<Object> getRouteResponse(HttpServletRequest request) {
         String endpoint = request.getRequestURI();
-        System.out.println(endpoint);
 
         // Ищем роуты по конечной точке
         List<Route> routes = routeService.getByEndpoint(endpoint);
