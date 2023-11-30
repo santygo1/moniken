@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import Sidebar from "./components/sidebar/Sidebar";
+import Collection from "./components/collection/Collection";
+import { useState } from "react";
+import { createStore } from "redux";
+import rootReducer from "./reducers/index";
+import { Provider } from "react-redux";
+
+const store = createStore(rootReducer);
 
 function App() {
+  const [currentCollectionId, setCurrentCollectionId] = useState({});
+
+  const setCollectionHandler = (id) => {
+    setCurrentCollectionId(id);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <div className="App">
+        <main>
+          <Sidebar collectionHandler={setCollectionHandler} />
+          <Collection currentCollectionId={currentCollectionId} />
+        </main>
+      </div>
+    </Provider>
   );
 }
 
