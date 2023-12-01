@@ -39,39 +39,7 @@ function Collection({ currentCollectionId }) {
             </svg>
           </a>
         </div>
-        <div className="feature col">
-          <div>GET</div>
-          <h2>/cool_users/TimLid</h2>
-          <p>Params, body, header, e.t.c...</p>
-          <a href="#" className="icon-link">
-            Редактировать
-            <svg className="bi" width="1em" height="1em">
-              <use xlinkHref="#chevron-right"></use>
-            </svg>
-          </a>
-        </div>
-        <div className="feature col">
-          <div>POST</div>
-          <h2>/cool_users/most_cool/</h2>
-          <p>Params, body, header, e.t.c...</p>
-          <a href="#" className="icon-link">
-            Редактировать
-            <svg className="bi" width="1em" height="1em">
-              <use xlinkHref="#chevron-right"></use>
-            </svg>
-          </a>
-        </div>
-        <div className="feature col">
-          <div>POST</div>
-          <h2>/cool_users/</h2>
-          <p>Params, body, header, e.t.c...</p>
-          <a href="#" className="icon-link">
-            Редактировать
-            <svg className="bi" width="1em" height="1em">
-              <use xlinkHref="#chevron-right"></use>
-            </svg>
-          </a>
-        </div>
+
         <div className="feature col btn-block">
           <button
             className="new-route-btn"

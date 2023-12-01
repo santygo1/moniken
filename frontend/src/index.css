@@ -49,6 +49,13 @@ main {
   min-height: 180px;
 }
 
+.route-form {
+  width: 40%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
 .collection {
   background-color: #ffffff;
 }
