@@ -1,24 +1,30 @@
 import React, { useState } from "react";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
+import { useDispatch } from "react-redux";
 
-function AddNewCollectionTab({ closeHandle }) {
+function AddNewCollectionTab({ closeHandle, currentCollectionId }) {
   const initialValues = {
     name: "",
     endpoint: "",
     status: "",
-    body: [
-      { name: "", value: "" }, // Начальное значение для одной группы полей
-    ],
-    headers: [
-      { name: "", value: "" }, // Начальное значение для одной группы полей
-    ],
+    body: [{ name: "", value: "" }],
+    headers: [{ name: "", value: "" }],
     timeout: "",
     description: "",
+    method: "",
   };
 
+  const dispatch = useDispatch();
+
   const handleSubmit = (values) => {
-    // Обработка отправки формы
-    console.log("Отправка формы с данными", values);
+    if (values.method === "") {
+      values.method = "GET";
+    }
+    dispatch({
+      type: "createRout",
+      payload: { ...values, collectionId: currentCollectionId },
+    });
+    closeHandle();
   };
 
   return (
@@ -87,7 +93,9 @@ function AddNewCollectionTab({ closeHandle }) {
             </FieldArray>
 
             <Field className="form-select" name="method" component="select">
-              <option value="GET">GET</option>
+              <option value="GET" selected>
+                GET
+              </option>
               <option value="PUT">PUT</option>
               <option value="POST">POST</option>
               <option value="DELETE">DELETE</option>
@@ -160,7 +168,6 @@ function AddNewCollectionTab({ closeHandle }) {
         )}
       </Formik>
 
-      <button onClick={closeHandle}>Завершить</button>
       <button onClick={closeHandle}>Отменить</button>
     </div>
   );

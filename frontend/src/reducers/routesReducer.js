@@ -6,7 +6,7 @@ const initialState = {
 
 const routesReducer = (state = initialState, action = {}) => {
   switch (action.type) {
-    case "create": {
+    case "createRout": {
       const routes = state.routes ? [...state.routes] : [];
       routes.push({ ...action.payload, id: v4() });
       return { ...state, routes };
@@ -16,4 +16,4 @@ const routesReducer = (state = initialState, action = {}) => {
   }
 };
 
-export default routesReducer();
+export default routesReducer;

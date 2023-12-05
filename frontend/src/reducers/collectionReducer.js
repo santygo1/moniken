@@ -6,7 +6,7 @@ const initialState = {
 
 const collectionReducer = (state = initialState, action = {}) => {
   switch (action.type) {
-    case "create": {
+    case "createColl": {
       const collections = state.collections ? [...state.collections] : [];
       const existing = collections.findIndex(
         (item) => item.name === action.payload.name,

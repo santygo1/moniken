@@ -64,7 +64,7 @@ function Sidebar({ collectionHandler }) {
                 className="btn btn-primary"
                 onClick={() => {
                   dispatch({
-                    type: "create",
+                    type: "createColl",
                     payload: {
                       name: newCollectionName,
                       description: newCollectionDesc,
