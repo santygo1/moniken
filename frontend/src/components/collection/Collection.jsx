@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import AddNewCollectionTab from "./AddNewCollectionTab";
-import RouteItem from "./RouteItem";
 import CollectionList from "./CollectionList";
+import RouteFullView from "./RouteFullView";
 
-function Collection({ currentCollectionId }) {
+function Collection({ currentCollectionId, detailId, setDetailIdHandler }) {
   const collections = useSelector(
     (state) => state.collectionReducer.collections,
   );
@@ -18,6 +18,7 @@ function Collection({ currentCollectionId }) {
   );
 
   const [isNewModOn, setNewMod] = useState(false);
+  const [isEditMod, setEditMod] = useState(false);
 
   if (!currentCollection) {
     return (
@@ -30,8 +31,42 @@ function Collection({ currentCollectionId }) {
   if (isNewModOn) {
     return (
       <AddNewCollectionTab
+        initialValues={{
+          name: "",
+          endpoint: "",
+          status: "",
+          body: [{ name: "", value: "" }],
+          headers: [{ name: "", value: "" }],
+          timeout: "",
+          description: "",
+          method: "",
+        }}
+        dispatchType="createRout"
         closeHandle={() => setNewMod(false)}
         currentCollectionId={currentCollectionId}
+      />
+    );
+  }
+  // Edit mod
+  if (isEditMod) {
+    return (
+      <AddNewCollectionTab
+        initialValues={currentRoutes.find((item) => item.id === detailId)}
+        dispatchType="updateRoute"
+        closeHandle={() => setEditMod(false)}
+        currentCollectionId={currentCollectionId}
+      />
+    );
+  }
+
+  if (detailId !== "") {
+    return (
+      <RouteFullView
+        routeObject={currentRoutes.find((item) => item.id === detailId)}
+        closeModHandler={() => {
+          setDetailIdHandler("");
+        }}
+        editModOnHandler={() => setEditMod(true)}
       />
     );
   }
@@ -41,6 +76,7 @@ function Collection({ currentCollectionId }) {
       collectionName={currentCollection.name}
       currentRoutes={currentRoutes}
       btnAction={() => setNewMod(true)}
+      currentIdHandler={setDetailIdHandler}
     />
   );
 }

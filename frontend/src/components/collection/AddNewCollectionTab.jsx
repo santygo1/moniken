@@ -2,17 +2,22 @@ import React, { useState } from "react";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import { useDispatch } from "react-redux";
 
-function AddNewCollectionTab({ closeHandle, currentCollectionId }) {
-  const initialValues = {
-    name: "",
-    endpoint: "",
-    status: "",
-    body: [{ name: "", value: "" }],
-    headers: [{ name: "", value: "" }],
-    timeout: "",
-    description: "",
-    method: "",
-  };
+function AddNewCollectionTab({
+  closeHandle,
+  currentCollectionId,
+  initialValues,
+  dispatchType,
+}) {
+  // const initialValues = {
+  //   name: "",
+  //   endpoint: "",
+  //   status: "",
+  //   body: [{ name: "", value: "" }],
+  //   headers: [{ name: "", value: "" }],
+  //   timeout: "",
+  //   description: "",
+  //   method: "",
+  // };
 
   const dispatch = useDispatch();
 
@@ -21,7 +26,7 @@ function AddNewCollectionTab({ closeHandle, currentCollectionId }) {
       values.method = "GET";
     }
     dispatch({
-      type: "createRout",
+      type: dispatchType,
       payload: { ...values, collectionId: currentCollectionId },
     });
     closeHandle();

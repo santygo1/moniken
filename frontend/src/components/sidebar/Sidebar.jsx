@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CollectSideView from "./CollectSideView";
 
-function Sidebar({ collectionHandler }) {
+function Sidebar({ collectionHandler, setDetailIdHandler }) {
   const collections = useSelector(
     (state) => state.collectionReducer.collections,
   );

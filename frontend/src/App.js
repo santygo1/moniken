@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import Sidebar from "./components/sidebar/Sidebar";
 import Collection from "./components/collection/Collection";
@@ -15,7 +14,11 @@ const store = createStore(
 function App() {
   const [currentCollectionId, setCurrentCollectionId] = useState({});
 
+  const [detailId, setDetailId] = useState("");
+  const setDetailIdHandler = (id) => setDetailId(id);
+
   const setCollectionHandler = (id) => {
+    setDetailIdHandler("");
     setCurrentCollectionId(id);
   };
 
@@ -24,7 +27,11 @@ function App() {
       <div className="App">
         <main>
           <Sidebar collectionHandler={setCollectionHandler} />
-          <Collection currentCollectionId={currentCollectionId} />
+          <Collection
+            currentCollectionId={currentCollectionId}
+            setDetailIdHandler={setDetailIdHandler}
+            detailId={detailId}
+          />
         </main>
       </div>
     </Provider>

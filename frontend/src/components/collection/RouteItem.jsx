@@ -1,8 +1,8 @@
 import React from "react";
 
-function RouteItem(props) {
+function RouteItem({ onClickHandler, ...props }) {
   return (
-    <div className="feature col">
+    <div className="feature col" onClick={() => onClickHandler(props.id)}>
       <div>{props.method}</div>
       <h2>{props.endpoint}</h2>
       <p>{props.name}</p>
