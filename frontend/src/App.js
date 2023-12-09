@@ -2,14 +2,10 @@ import "./App.css";
 import Sidebar from "./components/sidebar/Sidebar";
 import Collection from "./components/collection/Collection";
 import { useState } from "react";
-import { createStore } from "redux";
-import rootReducer from "./reducers/index";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
+import configureStore from "./store/index";
 
-const store = createStore(
-  rootReducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-);
+const store = configureStore();
 
 function App() {
   const [currentCollectionId, setCurrentCollectionId] = useState({});
