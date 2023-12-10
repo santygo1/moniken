@@ -13,6 +13,7 @@ function RouteCreationView({
   const routeObject = useSelector((state) => state.routesReducer.currentRoute);
 
   const handleSubmit = (values) => {
+    console.log("values", values);
     if (values.method === "") {
       values.method = "GET";
     }
@@ -20,12 +21,10 @@ function RouteCreationView({
       type: dispatchType,
       payload: values,
       collection: collectionName,
-      routeId: routeObject.id,
+      routeId: routeObject ? routeObject.id : "",
     });
     closeHandle();
   };
-
-  console.log(dispatchType);
 
   if (dispatchType === "updateRouteById") {
     return (

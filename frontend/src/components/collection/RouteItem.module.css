@@ -1,0 +1,11 @@
+
+
+.RouteItem {
+    border-radius: 25px;
+    min-height: 200px;
+    cursor: pointer;
+}
+
+.RouteItem:hover {
+    border: 1px solid #212121;
+}
