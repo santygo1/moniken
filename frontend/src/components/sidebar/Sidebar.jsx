@@ -26,10 +26,9 @@ function Sidebar({ collectionHandler, setDetailIdHandler }) {
       <hr></hr>
       <ul className="nav nav-pills flex-column mb-auto">
         {collections.map((item) => (
-          <li className="nav-item">
+          <li className="nav-item" key={item.id}>
             <CollectSideView
               name={item.name}
-              key={item.id}
               id={item.id}
               collectionHandler={collectionHandler}
             />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import AddNewCollectionTab from "./AddNewCollectionTab";
+import { useDispatch, useSelector } from "react-redux";
+import RouteCreationView from "./RouteCreationView";
 import CollectionList from "./CollectionList";
 import RouteFullView from "./RouteFullView";
 
@@ -13,9 +13,20 @@ function Collection({ currentCollectionId, detailId, setDetailIdHandler }) {
   );
 
   const routes = useSelector((state) => state.routesReducer.routes);
-  const currentRoutes = routes?.filter(
-    (item) => item.collectionId === currentCollectionId,
-  );
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (currentCollection) {
+      dispatch({
+        type: "getRoutesByCollectionName",
+        payload: currentCollection.name,
+      });
+    }
+  }, [currentCollection]);
+
+  // const currentRoutes = routes?.filter(
+  //   (item) => item.collectionId === currentCollectionId,
+  // );
 
   const [isNewModOn, setNewMod] = useState(false);
   const [isEditMod, setEditMod] = useState(false);
@@ -23,14 +34,16 @@ function Collection({ currentCollectionId, detailId, setDetailIdHandler }) {
   if (!currentCollection) {
     return (
       <div className="collection container px-4 py-5">
-        <h2 className="pb-2 border-bottom">Выберете коллекцию</h2>
+        <h2 className="pb-2 border-bottom">
+          Выберете коллекцию или создайте новую
+        </h2>
       </div>
     );
   }
 
   if (isNewModOn) {
     return (
-      <AddNewCollectionTab
+      <RouteCreationView
         initialValues={{
           name: "",
           endpoint: "",
@@ -41,18 +54,18 @@ function Collection({ currentCollectionId, detailId, setDetailIdHandler }) {
           description: "",
           method: "",
         }}
-        dispatchType="createRout"
+        dispatchType="createNewRoute"
         closeHandle={() => setNewMod(false)}
-        currentCollectionId={currentCollectionId}
+        collectionName={currentCollection.name}
       />
     );
   }
   // Edit mod
   if (isEditMod) {
     return (
-      <AddNewCollectionTab
-        initialValues={currentRoutes.find((item) => item.id === detailId)}
-        dispatchType="updateRoute"
+      <RouteCreationView
+        initialValues={routes.find((item) => item.id === detailId)}
+        dispatchType="updateRouteById"
         closeHandle={() => setEditMod(false)}
         currentCollectionId={currentCollectionId}
       />
@@ -62,11 +75,11 @@ function Collection({ currentCollectionId, detailId, setDetailIdHandler }) {
   if (detailId !== "") {
     return (
       <RouteFullView
-        routeObject={currentRoutes.find((item) => item.id === detailId)}
         closeModHandler={() => {
           setDetailIdHandler("");
         }}
         editModOnHandler={() => setEditMod(true)}
+        routeId={detailId}
       />
     );
   }
@@ -74,7 +87,7 @@ function Collection({ currentCollectionId, detailId, setDetailIdHandler }) {
   return (
     <CollectionList
       collectionName={currentCollection.name}
-      currentRoutes={currentRoutes}
+      currentRoutes={routes}
       btnAction={() => setNewMod(true)}
       currentIdHandler={setDetailIdHandler}
     />

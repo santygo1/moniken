@@ -5,6 +5,15 @@ import rootReducer from "../reducers";
 import addNewCollectionMiddleware from "../middleware/collection/addNewCollectionMiddleware";
 import deleteCollectionMiddleware from "../middleware/collection/deleteCollectionMiddleware";
 import updateCollectionMiddleware from "../middleware/collection/updateCollectionMiddleware";
+import {
+  getRouteById,
+  getRoutesByCollectionNameApi,
+} from "../api/routes/routesApi";
+import getRoutesByCollectionNameMiddleware from "../middleware/routes/getRoutesByCollectionNameMiddleware";
+import deleteRouteByIdMiddleware from "../middleware/routes/deleteRouteByIdMiddleware";
+import createNewRouteMiddleware from "../middleware/routes/createNewRouteMiddleware";
+import getRouteByIdMiddleware from "../middleware/routes/getRouteByIdMiddleware";
+import updateRouteByIdMiddleware from "../middleware/routes/updateRouteByIdMiddleware";
 
 export default function configureStore(preloadedState) {
   const middlewares = [
@@ -12,6 +21,11 @@ export default function configureStore(preloadedState) {
     addNewCollectionMiddleware,
     deleteCollectionMiddleware,
     updateCollectionMiddleware,
+    getRoutesByCollectionNameMiddleware,
+    deleteRouteByIdMiddleware,
+    createNewRouteMiddleware,
+    getRouteByIdMiddleware,
+    updateRouteByIdMiddleware,
   ];
   const middlewareEnhancer = applyMiddleware(...middlewares);
 

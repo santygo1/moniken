@@ -2,7 +2,7 @@ import "./App.css";
 import Sidebar from "./components/sidebar/Sidebar";
 import Collection from "./components/collection/Collection";
 import { useState } from "react";
-import { Provider, useDispatch } from "react-redux";
+import { Provider } from "react-redux";
 import configureStore from "./store/index";
 
 const store = configureStore();

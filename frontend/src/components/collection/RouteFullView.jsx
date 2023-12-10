@@ -1,8 +1,17 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-function RouteFullView({ routeObject, closeModHandler, editModOnHandler }) {
+function RouteFullView({ closeModHandler, editModOnHandler, routeId }) {
   const dispatch = useDispatch();
+  const routeObject = useSelector((state) => state.routesReducer.currentRoute);
+
+  useEffect(() => {
+    dispatch({ type: "getRouteById", payload: routeId });
+  }, []);
+
+  if (!routeObject) {
+    return <h2>Loading</h2>;
+  }
 
   return (
     <div>
@@ -17,18 +26,26 @@ function RouteFullView({ routeObject, closeModHandler, editModOnHandler }) {
       <hr></hr>
       {routeObject.status && <p>Status: {routeObject.status}</p>}
       {routeObject.timeout && <p>Timeout: {routeObject.timeout}</p>}
-      <p>Body:</p>
-      {routeObject.body.map((item) => (
-        <p>
-          {item.name}: {item.value}
-        </p>
-      ))}
-      <p>Headers:</p>
-      {routeObject.headers.map((item) => (
-        <p>
-          {item.name}: {item.value}
-        </p>
-      ))}
+      {routeObject.body && (
+        <div>
+          <p>Body:</p>
+          {Object.entries(routeObject.body).map(([key, value]) => (
+            <p>
+              {key}: {value}
+            </p>
+          ))}
+        </div>
+      )}
+      {routeObject.headers && (
+        <div>
+          <p>Headers:</p>
+          {Object.entries(routeObject.headers).map(([key, value]) => (
+            <p>
+              {key}: {value}
+            </p>
+          ))}
+        </div>
+      )}
       <hr></hr>
       <p>Description</p>
       {routeObject.description ? (
@@ -44,8 +61,8 @@ function RouteFullView({ routeObject, closeModHandler, editModOnHandler }) {
           type="button"
           onClick={() => {
             dispatch({
-              type: "deleteRout",
-              payload: { id: routeObject.id },
+              type: "deleteRouteById",
+              payload: routeObject.id,
             });
             closeModHandler();
           }}
