@@ -1,10 +1,10 @@
-name: Build
+name: Build frontend
 
 on:
   push:
     branches: [ "main" ]
     paths:
-      - 'backend/**'
+      - 'frontend/**'
 jobs:
   build:
     runs-on: ubuntu-latest
