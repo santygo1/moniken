@@ -4,15 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
-import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.hateoas.RepresentationModel;
 import ru.moniken.validation.WithoutSpaces;
 
-@Hidden
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
@@ -20,7 +17,7 @@ import ru.moniken.validation.WithoutSpaces;
 @ToString
 @EqualsAndHashCode(callSuper = false)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class RouteCollectionDTO extends RepresentationModel<RouteCollectionDTO> {
+public class RouteCollectionDTO {
 
     @JsonView(Views.Short.class)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

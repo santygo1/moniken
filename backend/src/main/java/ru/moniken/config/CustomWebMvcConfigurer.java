@@ -1,20 +1,23 @@
 package ru.moniken.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class IndexConfig implements WebMvcConfigurer {
+public class CustomWebMvcConfigurer implements WebMvcConfigurer {
 
-    @Autowired
-    MonikenConfig config;
+
+    private final MonikenConfig config;
+
+    public CustomWebMvcConfigurer(MonikenConfig config) {
+        this.config = config;
+    }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry
                 .addViewController(config.getEndpoint() + "/ui")
-                .setViewName("forward:"+config.getEndpoint()+"/index.html");
+                .setViewName("forward:" + config.getEndpoint() + "/index.html");
     }
 }

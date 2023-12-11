@@ -5,10 +5,6 @@ spring:
     log-startup-info: false
     banner-mode: off
 
-moniken:
-  db-file-path: C:/data/monikendb #TODO: for unix
-
-
 logging:
   level:
     root: off
