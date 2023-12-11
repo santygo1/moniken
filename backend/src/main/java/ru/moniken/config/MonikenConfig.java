@@ -25,11 +25,4 @@ public class MonikenConfig {
     @Getter
     @Setter
     private String version;
-
-    @Getter
-    private boolean welcomeConsole = true;
-
-    public void setWelcomeConsole(String welcomeConsole) {
-        this.welcomeConsole = Boolean.parseBoolean(welcomeConsole);
-    }
 }
