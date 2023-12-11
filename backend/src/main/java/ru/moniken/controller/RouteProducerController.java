@@ -1,7 +1,5 @@
 package ru.moniken.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +15,7 @@ import ru.moniken.service.RouteProducerService;
 
 import java.util.List;
 
-@Tag(name = "Route Producer", description = "Producing created route, with specified configuration")
+
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
@@ -25,16 +23,10 @@ public class RouteProducerController {
 
     final RouteProducerService routeService;
 
-    /**
-     * Обрабатывает все запросы, которые не начинаются с endpoint указанного для moniken
-     * P.S: Скорее всего это костыль, но другого решения я придумать не смог
-     */
-    static final String ALL_WITH_EXCLUDE_MONIKEN = "{name:^(?!\\" + "${moniken.endpoint}" + ").+}";
-
-    @Operation(summary = "This method is produced created routes values")
-    @RequestMapping(ALL_WITH_EXCLUDE_MONIKEN)
+    @RequestMapping("**")
     ResponseEntity<Object> getRouteResponse(HttpServletRequest request) {
         String endpoint = request.getRequestURI();
+        System.out.println(request.getRequestURL());
 
         // Ищем роуты по конечной точке
         List<Route> routes = routeService.getByEndpoint(endpoint);

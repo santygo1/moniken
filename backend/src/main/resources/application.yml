@@ -4,9 +4,8 @@ spring:
     banner-mode: off
   profiles:
     active: prod
-
-  hateoas:
-    use-hal-as-default-json-media-type: false
+  mvc:
+    static-path-pattern: "${moniken.endpoint}/**"
 
   # it's need for integrate HATEOAS with Jackson JsonView annotation
   jackson:
@@ -14,23 +13,14 @@ spring:
       default-view-inclusion: true
   h2:
     console:
-      enabled: ${moniken.h2}
-      path: ${moniken.endpoint}/h2-console
-
-springdoc:
-  api-docs:
-    enabled: true
-    path: ${moniken.endpoint}/api-docs
-  swagger-ui:
-    path: ${moniken.endpoint}/swagger-ui
-    disable-swagger-default-url: true
+      enabled: false
+      path: "${moniken.endpoint}/h2-console"
 
 moniken:
-  endpoint: /moniken
+  endpoint: "/moniken"
   version: @project.version@
   welcome-console: true
   port: 8080
-  h2: false
 
 server:
   port: ${moniken.port}

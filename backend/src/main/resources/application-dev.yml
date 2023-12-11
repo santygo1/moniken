@@ -7,10 +7,5 @@ spring:
     console:
       enabled: true
 
-
-springdoc:
-  swagger-ui:
-    operations-sorter: method
-
 moniken:
   welcome-console: false

@@ -52,18 +52,6 @@ class ConsoleInfoPrinter implements ApplicationListener<ApplicationReadyEvent> {
     @Value("${server.port}")
     String port;
 
-    @Value("${springdoc.api-docs.path}")
-    String apiDocsPath;
-
-    @Value("${springdoc.swagger-ui.path}")
-    String swaggerPath;
-
-    @Value("${moniken.h2}")
-    String h2;
-
-    @Value("${spring.h2.console.path}")
-    String h2Path;
-
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         if (!moniken.isWelcomeConsole()) return;
@@ -77,12 +65,10 @@ class ConsoleInfoPrinter implements ApplicationListener<ApplicationReadyEvent> {
         printTitle(colorful("MAP", AnsiColor.BLUE ));
 
         String monikenEndpoint = moniken.getEndpoint();
+        printlnField("UI:", monikenEndpoint + "/ui");
         printlnField("Collections:", monikenEndpoint + "/collections");
         printlnField("Routes:", monikenEndpoint + "/routes");
 
-        if (swaggerPath != null) printlnField("Swagger:", swaggerPath);
-        if (apiDocsPath != null) printlnField("Api Docs:", apiDocsPath);
-        if (Boolean.parseBoolean(h2)) printlnField("H2:", h2Path);
     }
     private static void printlnField(String left, String right) {
         int spaceCount = LOGO_LENGTH - left.replaceAll(DELETE_ANSI_REGEX,"").length()
