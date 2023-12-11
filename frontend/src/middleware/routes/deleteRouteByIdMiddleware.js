@@ -4,7 +4,7 @@ const deleteRouteByIdMiddleware = (store) => (next) => (action) => {
   if (action.type === "deleteRouteById") {
     (async () => {
       try {
-        const response = await deleteRouteById(action.payload);
+        await deleteRouteById(action.payload);
         store.dispatch({
           type: "deleteRoute",
           payload: {

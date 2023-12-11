@@ -7,7 +7,7 @@ function RouteFullView({ closeModHandler, editModOnHandler, routeId }) {
 
   useEffect(() => {
     dispatch({ type: "getRouteById", payload: routeId });
-  }, []);
+  }, [dispatch, routeId]);
 
   if (!routeObject) {
     return <h2>Loading</h2>;

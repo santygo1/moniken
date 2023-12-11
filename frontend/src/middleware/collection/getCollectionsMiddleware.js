@@ -1,4 +1,3 @@
-import axios from "axios";
 import { getAllCollectionsRequest } from "../../api/collections/collectionsApi";
 
 const getCollectionsMiddleware = (store) => (next) => (action) => {

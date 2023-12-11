@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CollectSideView from "./CollectSideView";
 
-function Sidebar({ collectionHandler, setDetailIdHandler }) {
+function Sidebar({ collectionHandler }) {
   const collections = useSelector(
     (state) => state.collectionReducer.collections,
   );
@@ -14,7 +14,7 @@ function Sidebar({ collectionHandler, setDetailIdHandler }) {
 
   useEffect(() => {
     dispatch({ type: "getAllCollections" });
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="sidebar d-flex flex-column flex-shrink-0 p-3 bg-light">

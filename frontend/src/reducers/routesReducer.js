@@ -1,5 +1,3 @@
-import { v4 } from "uuid";
-
 const initialState = {
   routes: [],
 };

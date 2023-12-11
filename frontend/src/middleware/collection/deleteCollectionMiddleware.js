@@ -4,7 +4,7 @@ const deleteCollectionMiddleware = (store) => (next) => (action) => {
   if (action.type === "deleteCollectionByName") {
     (async () => {
       try {
-        const response = deleteCollectionRequest(action.payload);
+        await deleteCollectionRequest(action.payload);
         store.dispatch({
           type: "deleteCollection",
           payload: {

@@ -1,4 +1,4 @@
-import { getRouteById, updateRouteById } from "../../api/routes/routesApi";
+import { updateRouteById } from "../../api/routes/routesApi";
 import { transformFormData } from "../../utils/formData";
 
 const updateRouteByIdMiddleware = (store) => (next) => (action) => {

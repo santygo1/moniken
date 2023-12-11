@@ -22,7 +22,7 @@ function Collection({ currentCollectionId, detailId, setDetailIdHandler }) {
         payload: currentCollection.name,
       });
     }
-  }, [currentCollection]);
+  }, [currentCollection, dispatch]);
 
   // const currentRoutes = routes?.filter(
   //   (item) => item.collectionId === currentCollectionId,
