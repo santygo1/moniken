@@ -4,6 +4,8 @@ spring:
     banner-mode: off
   profiles:
     active: prod
+  mvc:
+    static-path-pattern: ${moniken.endpoint}/**
 
   hateoas:
     use-hal-as-default-json-media-type: false
