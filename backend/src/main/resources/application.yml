@@ -4,13 +4,7 @@ spring:
     banner-mode: off
   profiles:
     active: prod
-  mvc:
-    static-path-pattern: "${moniken.endpoint}/**"
 
-  # it's need for integrate HATEOAS with Jackson JsonView annotation
-  jackson:
-    mapper:
-      default-view-inclusion: true
   h2:
     console:
       enabled: false
@@ -19,7 +13,6 @@ spring:
 moniken:
   endpoint: "/moniken"
   version: @project.version@
-  welcome-console: true
   port: 8080
 
 server:

@@ -26,8 +26,6 @@ public class RouteProducerController {
     @RequestMapping("**")
     ResponseEntity<Object> getRouteResponse(HttpServletRequest request) {
         String endpoint = request.getRequestURI();
-        System.out.println(request.getRequestURL());
-
         // Ищем роуты по конечной точке
         List<Route> routes = routeService.getByEndpoint(endpoint);
 

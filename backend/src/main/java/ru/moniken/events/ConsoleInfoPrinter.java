@@ -54,7 +54,6 @@ class ConsoleInfoPrinter implements ApplicationListener<ApplicationReadyEvent> {
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        if (!moniken.isWelcomeConsole()) return;
 
         System.out.println(logo);
         printlnField(
@@ -65,7 +64,6 @@ class ConsoleInfoPrinter implements ApplicationListener<ApplicationReadyEvent> {
         printTitle(colorful("MAP", AnsiColor.BLUE ));
 
         String monikenEndpoint = moniken.getEndpoint();
-        printlnField("UI:", monikenEndpoint + "/ui");
         printlnField("Collections:", monikenEndpoint + "/collections");
         printlnField("Routes:", monikenEndpoint + "/routes");
 
