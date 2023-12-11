@@ -6,6 +6,3 @@ spring:
   h2:
     console:
       enabled: true
-
-moniken:
-  welcome-console: false
