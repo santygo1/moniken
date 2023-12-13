@@ -8,7 +8,6 @@ const bodyHeadTransformer = (object) => {
 };
 
 const bodyHeadToArray = (object) => {
-  console.log(object);
   return Object.entries(object).map(([name, value]) => ({ name, value }));
 };
 
@@ -39,4 +38,9 @@ const expandInitialValues = (data) => {
   };
 };
 
-export { transformFormData, expandInitialValues };
+export {
+  transformFormData,
+  expandInitialValues,
+  bodyHeadToArray,
+  bodyHeadTransformer,
+};
